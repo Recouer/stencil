@@ -2,10 +2,10 @@ CC      = mpicc
 CFLAGS += -Wall -g -O4
 LDLIBS += -lm -lrt
 
-all: stencil
+all: stencil stencil_seq stencil_MPI_Pure
 
 clean:
-	-rm stencil
+	-rm stencil stencil_seq stencil_MPI_Pure
 
 mrproper: clean
 	-rm *~

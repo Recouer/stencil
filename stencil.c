@@ -332,8 +332,18 @@ int main(int argc, char **argv) {
     if (id == 0) {
         clock_gettime(CLOCK_MONOTONIC, &t2);
         const double t_usec = (t2.tv_sec - t1.tv_sec) * 1000000.0 + (t2.tv_nsec - t1.tv_nsec) / 1000.0;
-        printf("# steps = %d\n", s);
-        printf("# time = %g usecs.\n", t_usec);
+        const long nbCells = (STENCIL_SIZE_X - 2) * (STENCIL_SIZE_Y - 2);
+        const long nbOperationsByStep = 10 * nbCells;
+        const double gigaflops = nbOperationsByStep * s * 1E6 / t_usec / 1E9;
+        const double nbCellsByS = nbCells * s * 1E6 / t_usec;
+
+        fprintf(stderr,
+                "steps,time(µ "
+                "sec),height,width,nbCells,fpOpByStep,gigaflop/s,cell/s\n");
+        printf("%d,%g,%d,%d,%ld,%ld,%g,%g\n", s, t_usec, STENCIL_SIZE_X,
+               STENCIL_SIZE_Y, nbCells, nbOperationsByStep, gigaflops,
+               nbCellsByS);
+
         stencil_display(current_buffer, 0, STENCIL_SIZE_X, 0, STENCIL_SIZE_Y);
         stencil_display((current_buffer + 1) % 2, 0, STENCIL_SIZE_X, 0, STENCIL_SIZE_Y);
     }
