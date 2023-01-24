@@ -18,7 +18,7 @@ static const double alpha = 0.02;
 static const double epsilon = 0.0001;
 
 /** max number of steps */
-static const int stencil_max_steps = 5;
+static const int stencil_max_steps = 5000000;
 
 double * values;
 double * X_computation_buffer;
@@ -289,14 +289,9 @@ static int stencil_step(int step) {
         }
     }
 
-    MPI_Barrier(MPI_COMM_WORLD);
-    if (id == 0) {
-        stencil_display(current_buffer, 0, STENCIL_SIZE_X, 0, STENCIL_SIZE_Y);
-        stencil_display(current_buffer + 1 % 2, 0, STENCIL_SIZE_X, 0, STENCIL_SIZE_Y);
-    }
-    MPI_Barrier(MPI_COMM_WORLD);
-
     current_buffer = next_buffer;
+    MPI_Allreduce(&convergence, &convergence, 1, MPI_C_BOOL, MPI_LOR, MPI_COMM_WORLD);
+
     return convergence;
 }
 
