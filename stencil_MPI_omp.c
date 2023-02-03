@@ -185,7 +185,7 @@ static void compute_one_step(int size_y,
     int x, y;
 
 #pragma omp parallel
-#pragma omp for collapse(2)
+#pragma omp for
     for (x = 1 + x_offset; x < global_options->X_step - 1 - x_delim; x++) {
         for (y = 1 + y_offset; y < global_options->Y_step - 1 - y_delim; y++) {
             global_options->values[next_buffer * global_options->XY_plane + x * size_y + y] =
