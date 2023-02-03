@@ -34,6 +34,20 @@ do
   done
 done
 
+CSV_FILENAME=omp.csv
+echo "steps,timeInµSec,height,width,tiledW,tiledH,nbCells,fpOpByStep,gigaflops,cellByS" > $CSV_DIR/$CSV_FILENAME
+
+IFS=',';
+for i in "${SIZEs[@]}";
+do
+    set -- $i
+    make clean -s
+    STENCIL_SIZE_X=$1 STENCIL_SIZE_Y=$2 STENCIL_MAX_STEPS=$STENCIL_MAX_STEPS TILE_WIDTH=10 TILE_HEIGHT=10 make stencil_OMP_for || exit 1
+    for (( i=1; i <= $ITER; i++ )); do
+      OMP_NUM_THREADS=2 OMP_SCHEDULE=static ./stencil_OMP_for >> $CSV_DIR/$CSV_FILENAME
+    done
+done
+
 CSV_FILENAME=mpiPure.csv
 echo "steps,timeInµSec,height,width,nbCells,fpOpByStep,gigaflops,cellByS" > $CSV_DIR/$CSV_FILENAME
 
@@ -58,7 +72,7 @@ do
     make clean -s
     STENCIL_SIZE_X=$1 STENCIL_SIZE_Y=$2 STENCIL_MAX_STEPS=$STENCIL_MAX_STEPS make stencil_MPI_omp || exit 1
     for (( i=1; i <= $ITER; i++ )); do
-      OMP_NUM_THREADS=2 mpirun -np 4 ./stencil_MPI_omp >> $CSV_DIR/$CSV_FILENAME
+      OMP_NUM_THREADS=2 OMP_SCHEDULE=static mpirun -np 4 ./stencil_MPI_omp >> $CSV_DIR/$CSV_FILENAME
     done
 done
 

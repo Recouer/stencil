@@ -20,7 +20,7 @@ clean:
 
 diff: all
 	./stencil_seq -dpc > stencil_seq.out
-	./stencil_OMP_for -dpc > stencil_OMP_for.out
+	OMP_NUM_THREADS=2 ./stencil_OMP_for -dpc > stencil_OMP_for.out
 	mpirun -np 4 ./stencil_MPI_Pure -dpc > stencil_MPI_Pure.out
 	OMP_NUM_THREADS=2 mpirun -np 4 ./stencil_MPI_omp -dpc > stencil_MPI_omp.out
 	# diff stencil_seq.out stencil_OMP_for.out
