@@ -1,14 +1,20 @@
 
+#include <math.h>
+#include <mpi.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <time.h>
-#include <mpi.h>
+#include <unistd.h>
 
 #define TEST(text) {fprintf(stderr, "test %s\n", text);}
 
-#define STENCIL_SIZE_X 1000
-#define STENCIL_SIZE_Y 1000
+#ifndef STENCIL_SIZE_X
+#define STENCIL_SIZE_X 25
+#endif
+#ifndef STENCIL_SIZE_Y
+#define STENCIL_SIZE_Y 30
+#endif
 
 /** number of buffers for N-buffering; should be at least 2 */
 #define STENCIL_NBUFFERS 2
@@ -323,6 +329,32 @@ static int stencil_step(int step) {
 }
 
 int main(int argc, char *argv[]) {
+    bool printHeader = false;
+    bool printColor = false;
+    bool printStencilDisplay = false;
+    FILE *dataStd = stdout;
+
+    int opt;
+    while ((opt = getopt(argc, argv, "hpdc")) != -1) {
+        switch (opt) {
+            case 'h':
+                printHeader = true;
+                break;
+            case 'p':
+                printStencilDisplay = true;
+                break;
+            case 'd':
+                dataStd = stderr;
+                break;
+            case 'c':
+                printColor = true;
+                break;
+            default:
+                fprintf(stderr, "Usage: %s [-hpdc] \n", argv[0]);
+                exit(EXIT_FAILURE);
+        }
+    }
+
     int N;
 
     global_options = (struct Global_Options *) malloc(sizeof(struct Global_Options));
@@ -363,21 +395,33 @@ int main(int argc, char *argv[]) {
 
     if (global_options->id == 0) {
         clock_gettime(CLOCK_MONOTONIC, &t2);
-        const double t_usec = (t2.tv_sec - t1.tv_sec) * 1000000.0 + (t2.tv_nsec - t1.tv_nsec) / 1000.0;
+        const double t_usec =
+            (t2.tv_sec - t1.tv_sec) * 1E6 + (t2.tv_nsec - t1.tv_nsec) / 1E3;
         const long nbCells = (STENCIL_SIZE_X - 2) * (STENCIL_SIZE_Y - 2);
         const long nbOperationsByStep = 10 * nbCells;
         const double gigaflops = nbOperationsByStep * s * 1E6 / t_usec / 1E9;
         const double nbCellsByS = nbCells * s * 1E6 / t_usec;
 
-        fprintf(stderr,
-                "steps,time(µ "
-                "sec),height,wglobal_options->idth,nbCells,fpOpByStep,gigaflop/s,cell/s\n");
-        printf("%d,%g,%d,%d,%ld,%ld,%g,%g\n", s, t_usec, STENCIL_SIZE_X,
-               STENCIL_SIZE_Y, nbCells, nbOperationsByStep, gigaflops,
-               nbCellsByS);
+        if (printHeader)
+            printf(
+                "steps,timeInµSec,height,width,nbCells,fpOpByStep,gigaflops,"
+                "cellByS\n");
 
-//        stencil_display(current_buffer, 0, STENCIL_SIZE_X, 0, STENCIL_SIZE_Y);
-//        stencil_display((current_buffer + 1) % 2, 0, STENCIL_SIZE_X, 0, STENCIL_SIZE_Y);
+        if (printColor)
+            fprintf(dataStd, "%d,%g,%d,%d,%ld,%ld,%g,\033[0;32m%g\033[0m\n", s,
+                    t_usec, STENCIL_SIZE_X, STENCIL_SIZE_Y, nbCells,
+                    nbOperationsByStep, gigaflops, nbCellsByS);
+        else
+            fprintf(dataStd, "%d,%g,%d,%d,%ld,%ld,%g,%g\n", s, t_usec,
+                    STENCIL_SIZE_X, STENCIL_SIZE_Y, nbCells, nbOperationsByStep,
+                    gigaflops, nbCellsByS);
+
+        if (printStencilDisplay) {
+            stencil_display(current_buffer, 0, STENCIL_SIZE_X, 0,
+                            STENCIL_SIZE_Y);
+            stencil_display((current_buffer + 1) % 2, 0, STENCIL_SIZE_X, 0,
+                            STENCIL_SIZE_Y);
+        }
     }
 
     return 0;
