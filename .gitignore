@@ -1,6 +1,9 @@
 stencil
 stencil_seq
 stencil_MPI_Pure
+stencil_OMP_for
+stencil_MPI_omp
 csv/*
 !csv/.gitkeep
 .vscode/*
+*.out

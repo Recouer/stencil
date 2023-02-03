@@ -11,15 +11,19 @@ CFLAGS += -Wall -g -O4
 # CFLAGS += -fopenmp
 LDLIBS += -lm -lrt
 
-all: stencil stencil_seq stencil_MPI_Pure
+all: stencil_seq stencil_MPI_Pure stencil_OMP_for stencil_MPI_omp
 
 clean:
-	-rm -f stencil stencil_seq stencil_MPI_Pure
+	-rm -f stencil stencil_seq stencil_MPI_Pure stencil_OMP_for stencil_MPI_omp
 
 diff: all
-	./stencil -dc > stencil_mpi.out
 	./stencil_seq -dc > stencil_seq.out
-	diff stencil_seq.out stencil_mpi.out
+	./stencil_OMP_for -dc > stencil_OMP_for.out
+	mpirun -np 4 ./stencil_MPI_Pure -dc > stencil_MPI_Pure.out
+	mpirun -np 4 ./stencil_MPI_omp -dc > stencil_MPI_omp.out
+	diff stencil_seq.out stencil_MPI_Pure.out
+	diff stencil_seq.out stencil_OMP_for.out
+	diff stencil_seq.out stencil_MPI_omp.out
 
 mrproper: clean
 	-rm *~
