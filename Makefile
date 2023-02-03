@@ -17,10 +17,10 @@ clean:
 	-rm -f stencil stencil_seq stencil_MPI_Pure stencil_OMP_for stencil_MPI_omp
 
 diff: all
-	./stencil_seq -dc > stencil_seq.out
-	./stencil_OMP_for -dc > stencil_OMP_for.out
-	mpirun -np 4 ./stencil_MPI_Pure -dc > stencil_MPI_Pure.out
-	mpirun -np 4 ./stencil_MPI_omp -dc > stencil_MPI_omp.out
+	./stencil_seq -dpc > stencil_seq.out
+	./stencil_OMP_for -dpc > stencil_OMP_for.out
+	mpirun -np 4 ./stencil_MPI_Pure -dpc > stencil_MPI_Pure.out
+	mpirun -np 4 ./stencil_MPI_omp -dpc > stencil_MPI_omp.out
 	diff stencil_seq.out stencil_OMP_for.out
 	diff stencil_seq.out stencil_MPI_Pure.out
 	diff stencil_seq.out stencil_MPI_omp.out
