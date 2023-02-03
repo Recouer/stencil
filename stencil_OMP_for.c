@@ -15,6 +15,10 @@
 #define STENCIL_SIZE_Y 30
 #endif
 
+#ifndef STENCIL_MAX_STEPS
+#define STENCIL_MAX_STEPS 10000
+#endif
+
 #ifndef TILE_WIDTH
 #define TILE_WIDTH 6
 #endif
@@ -32,7 +36,7 @@ static const double alpha = 0.02;
 static const double epsilon = 0.0001;
 
 /** max number of steps */
-static const int stencil_max_steps = 10000;
+static const int stencil_max_steps = STENCIL_MAX_STEPS;
 
 static double values[STENCIL_NBUFFERS][STENCIL_SIZE_X][STENCIL_SIZE_Y];
 

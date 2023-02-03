@@ -16,6 +16,10 @@
 #define STENCIL_SIZE_Y 30
 #endif
 
+#ifndef STENCIL_MAX_STEPS
+#define STENCIL_MAX_STEPS 10000
+#endif
+
 /** number of buffers for N-buffering; should be at least 2 */
 #define STENCIL_NBUFFERS 2
 
@@ -361,7 +365,7 @@ int main(int argc, char *argv[]) {
 
 
     MPI_Init(&argc, &argv);
-    global_options->stencil_max_steps = 50000;
+    global_options->stencil_max_steps = STENCIL_MAX_STEPS;
 
 
     MPI_Comm_size(MPI_COMM_WORLD, &N);
