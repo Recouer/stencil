@@ -133,25 +133,25 @@ static void stencil_init() {
         else {
             if (global_options->X_ind == 0) {
                 for (x = 1; x < global_options->X_step - 1; x++) {
-                    global_options->values[b * global_options->XY_plane + x * global_options->Y_step + 1] = x + (global_options->Y_ind * (global_options->X_step - 2)) + 1 + 100;
+                    global_options->values[b * global_options->XY_plane + x * global_options->Y_step + 1] = x + (global_options->Y_ind * (global_options->X_step - 2)) + 1;
                 }
             }
 
             if (global_options->X_ind == (global_options->line_length - 1)) {
                 for (x = 1; x < global_options->X_step - 1; x++) {
-                    global_options->values[b * global_options->XY_plane + x * global_options->Y_step + global_options->Y_step - 2] = STENCIL_SIZE_X - (x + (global_options->Y_ind * (global_options->X_step - 2)) - 1) + 200;
+                    global_options->values[b * global_options->XY_plane + x * global_options->Y_step + global_options->Y_step - 2] = STENCIL_SIZE_X - (x + (global_options->Y_ind * (global_options->X_step - 2)) - 1);
                 }
             }
 
             if (global_options->Y_ind == 0) {
                 for (y = 1; y < global_options->Y_step - 1; y++) {
-                    global_options->values[b * global_options->XY_plane + global_options->Y_step + y] = (y + (global_options->X_ind * (global_options->Y_step - 2))) + 300;
+                    global_options->values[b * global_options->XY_plane + global_options->Y_step + y] = (y + (global_options->X_ind * (global_options->Y_step - 2)));
                 }
             }
 
             if (global_options->Y_ind == (global_options->line_length - 1)) {
                 for (y = 1; y < global_options->Y_step - 1; y++) {
-                    global_options->values[b * global_options->XY_plane + (global_options->X_step - 2) * global_options->Y_step + y] = STENCIL_SIZE_Y - (y + (global_options->X_ind * (global_options->Y_step - 2)) - 1) + 400;
+                    global_options->values[b * global_options->XY_plane + (global_options->X_step - 2) * global_options->Y_step + y] = STENCIL_SIZE_Y - (y + (global_options->X_ind * (global_options->Y_step - 2)) - 1);
                 }
             }
         }
