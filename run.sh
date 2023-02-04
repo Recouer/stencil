@@ -74,7 +74,7 @@ do
     make clean -s
     STENCIL_SIZE_X=$1 STENCIL_SIZE_Y=$2 STENCIL_MAX_STEPS=$STENCIL_MAX_STEPS make stencil_MPI_Pure || exit 1
     for (( i=1; i <= $ITER; i++ )); do
-      salloc -proutage --exclusive -N4 -n4 mpirun --map-by ppr:4:node ./stencil_MPI_Pure >> $CSV_DIR/$CSV_FILENAME
+      salloc -proutage --exclusive -N4 -n4 mpirun --map-by ppr:1:node ./stencil_MPI_Pure >> $CSV_DIR/$CSV_FILENAME
     done
 done
 
@@ -88,7 +88,7 @@ do
     make clean -s
     STENCIL_SIZE_X=$1 STENCIL_SIZE_Y=$2 STENCIL_MAX_STEPS=$STENCIL_MAX_STEPS make stencil_MPI_omp || exit 1
     for (( i=1; i <= $ITER; i++ )); do
-      salloc -proutage --exclusive -N4 -n4 -c4 mpirun --map-by ppr:4:node ./stencil_MPI_omp >> $CSV_DIR/$CSV_FILENAME
+      salloc -proutage --exclusive -N4 -n4 -c4 mpirun --map-by ppr:1:node ./stencil_MPI_omp >> $CSV_DIR/$CSV_FILENAME
     done
 done
 
