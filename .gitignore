@@ -2,6 +2,7 @@ stencil
 stencil_seq
 stencil_MPI_Pure
 stencil_OMP_for
+stencil_OMP_for_halos
 stencil_MPI_omp
 csv/*
 !csv/.gitkeep
