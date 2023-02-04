@@ -18,51 +18,51 @@ STENCIL_MAX_STEPS=200
 
 make -j
 
-module load compiler/gcc/10.3.0 mpi/openmpi/3.1.4-all;
+module load compiler/gcc/10.3.0 mpi/openmpi/3.1.4-all
 
-CSV_FILENAME=seq.csv
-echo "steps,timeInµSec,height,width,nbCells,fpOpByStep,gigaflops,cellByS" > $CSV_DIR/$CSV_FILENAME
+# CSV_FILENAME=seq.csv
+# echo "steps,timeInµSec,height,width,nbCells,fpOpByStep,gigaflops,cellByS" > $CSV_DIR/$CSV_FILENAME
 
-IFS=',';
-for i in "${SIZEs[@]}";
-do
-    set -- $i
-    make clean -s
-  STENCIL_SIZE_X=$1 STENCIL_SIZE_Y=$2 STENCIL_MAX_STEPS=$STENCIL_MAX_STEPS make stencil_seq || exit 1
+# IFS=',';
+# for i in "${SIZEs[@]}";
+# do
+#     set -- $i
+#     make clean -s
+#   STENCIL_SIZE_X=$1 STENCIL_SIZE_Y=$2 STENCIL_MAX_STEPS=$STENCIL_MAX_STEPS make stencil_seq || exit 1
 
-  for (( i=1; i <= $ITER; i++ )); do
-    salloc -proutage --exclusive -N1 -n1 -n1 ./stencil_seq >> $CSV_DIR/$CSV_FILENAME
-  done
-done
+#   for (( i=1; i <= $ITER; i++ )); do
+#     salloc -proutage --exclusive -N1 -n1 -n1 ./stencil_seq >> $CSV_DIR/$CSV_FILENAME
+#   done
+# done
 
-CSV_FILENAME=omp.csv
-echo "steps,timeInµSec,height,width,nbCells,fpOpByStep,gigaflops,cellByS" > $CSV_DIR/$CSV_FILENAME
+# CSV_FILENAME=omp.csv
+# echo "steps,timeInµSec,height,width,nbCells,fpOpByStep,gigaflops,cellByS" > $CSV_DIR/$CSV_FILENAME
 
-IFS=',';
-for i in "${SIZEs[@]}";
-do
-    set -- $i
-    make clean -s
-  STENCIL_SIZE_X=$1 STENCIL_SIZE_Y=$2 STENCIL_MAX_STEPS=$STENCIL_MAX_STEPS make stencil_OMP_for || exit 1
+# IFS=',';
+# for i in "${SIZEs[@]}";
+# do
+#     set -- $i
+#     make clean -s
+#   STENCIL_SIZE_X=$1 STENCIL_SIZE_Y=$2 STENCIL_MAX_STEPS=$STENCIL_MAX_STEPS make stencil_OMP_for || exit 1
 
-  for (( i=1; i <= $ITER; i++ )); do
-    salloc -proutage --exclusive -N1 -n1 -n4 /bin/env OMP_NUM_THREADS=4 OMP_SCHEDULE=static ./stencil_OMP_for >> $CSV_DIR/$CSV_FILENAME
-  done
-done
+#   for (( i=1; i <= $ITER; i++ )); do
+#     salloc -proutage --exclusive -N1 -n1 -n4 /bin/env OMP_NUM_THREADS=4 OMP_SCHEDULE=static ./stencil_OMP_for >> $CSV_DIR/$CSV_FILENAME
+#   done
+# done
 
-CSV_FILENAME=omp_halos.csv
-echo "steps,timeInµSec,height,width,tiledW,tiledH,nbCells,fpOpByStep,gigaflops,cellByS" > $CSV_DIR/$CSV_FILENAME
+# CSV_FILENAME=omp_halos.csv
+# echo "steps,timeInµSec,height,width,tiledW,tiledH,nbCells,fpOpByStep,gigaflops,cellByS" > $CSV_DIR/$CSV_FILENAME
 
-IFS=',';
-for i in "${SIZEs[@]}";
-do
-    set -- $i
-    make clean -s
-    STENCIL_SIZE_X=$1 STENCIL_SIZE_Y=$2 STENCIL_MAX_STEPS=$STENCIL_MAX_STEPS TILE_WIDTH=10 TILE_HEIGHT=10 make stencil_OMP_for_halos || exit 1
-    for (( i=1; i <= $ITER; i++ )); do
-      salloc -proutage --exclusive -N1 -n1 -n4 /bin/env OMP_NUM_THREADS=4 OMP_SCHEDULE=static ./stencil_OMP_for_halos >> $CSV_DIR/$CSV_FILENAME
-    done
-done
+# IFS=',';
+# for i in "${SIZEs[@]}";
+# do
+#     set -- $i
+#     make clean -s
+#     STENCIL_SIZE_X=$1 STENCIL_SIZE_Y=$2 STENCIL_MAX_STEPS=$STENCIL_MAX_STEPS TILE_WIDTH=10 TILE_HEIGHT=10 make stencil_OMP_for_halos || exit 1
+#     for (( i=1; i <= $ITER; i++ )); do
+#       salloc -proutage --exclusive -N1 -n1 -n4 /bin/env OMP_NUM_THREADS=4 OMP_SCHEDULE=static ./stencil_OMP_for_halos >> $CSV_DIR/$CSV_FILENAME
+#     done
+# done
 
 CSV_FILENAME=mpiPure.csv
 echo "steps,timeInµSec,height,width,nbCells,fpOpByStep,gigaflops,cellByS" > $CSV_DIR/$CSV_FILENAME
