@@ -22,7 +22,7 @@ dataRawOmp["name"] = "omp"
 
 filename <- "csvPlafrim/omp_halos.csv"
 dataRawOmpHalos <- read.csv(filename, header=T, sep = ",")
-dataRawOmpHalos["name"] = "ompHalos"
+dataRawOmpHalos["name"] = "ompHalos 10x10"
 
 #filename <- "csvPlafrim/mpiPure.csv"
 #dataRawMpiPure <- read.csv(filename, header=T, sep = ",")
@@ -126,6 +126,62 @@ plot(g)
 
 ###################################### Seq vs Omp
 filterData=data[data$name %in% c("seq", "omp"),]
+
+# GFlop/s
+g <- ggplot(filterData, aes(x=nbCells, y=gigaflops_mean, color=name))
+g <- g + geom_ribbon(aes(ymin=gigaflops_min, ymax=gigaflops_max),alpha=0.2)
+g <- g + geom_line()
+g <- g + geom_point()
+g <- g + labs(title="Performance by size", subtitle="sequential and OpenMP-for version", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="GFlop/s")
+plot(g)
+
+# GFlop/s log
+g <- ggplot(filterData, aes(x=nbCells, y=gigaflops_mean, color=name))
+g <- g + geom_ribbon(aes(ymin=gigaflops_min, ymax=gigaflops_max),alpha=0.2)
+g <- g + geom_line()
+g <- g + geom_point()
+g <- g + scale_x_continuous(trans='log2')
+g <- g + labs(title="Performance by size (log)", subtitle="sequential and OpenMP-for version", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="GFlop/s")
+plot(g)
+
+# time(µ sec)
+g <- ggplot(filterData, aes(x=nbCells, y=timeInµSec_mean, color=name))
+g <- g + geom_ribbon(aes(ymin=timeInµSec_min, ymax=timeInµSec_max),alpha=0.2)
+g <- g + geom_line()
+g <- g + geom_point()
+g <- g + labs(title="Execution time by size", subtitle="sequential and OpenMP-for version", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="time(µ sec)")
+plot(g)
+
+###################################### Omp Halos
+filterData=dataOmpHalos
+
+# GFlop/s
+g <- ggplot(filterData, aes(x=nbCells, y=gigaflops_mean))
+g <- g + geom_ribbon(aes(ymin=gigaflops_min, ymax=gigaflops_max),alpha=0.2)
+g <- g + geom_line()
+g <- g + geom_point()
+g <- g + labs(title="Performance by size", subtitle="OpenMP-for with halos (10x10) version", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="GFlop/s")
+plot(g)
+
+# GFlop/s log
+g <- ggplot(filterData, aes(x=nbCells, y=gigaflops_mean))
+g <- g + geom_ribbon(aes(ymin=gigaflops_min, ymax=gigaflops_max),alpha=0.2)
+g <- g + geom_line()
+g <- g + geom_point()
+g <- g + scale_x_continuous(trans='log2')
+g <- g + labs(title="Performance by size (log)", subtitle="OpenMP-for with halos (10x10) version", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="GFlop/s")
+plot(g)
+
+# time(µ sec)
+g <- ggplot(filterData, aes(x=nbCells, y=timeInµSec_mean))
+g <- g + geom_ribbon(aes(ymin=timeInµSec_min, ymax=timeInµSec_max),alpha=0.2)
+g <- g + geom_line()
+g <- g + geom_point()
+g <- g + labs(title="Execution time by size", subtitle="OpenMP-for with halos (10x10) version", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="time(µ sec)")
+plot(g)
+
+###################################### Seq vs Omp vs Omp Halos
+filterData=rbind(data[data$name %in% c("seq", "omp"),], dataOmpHalos[,!names(dataOmpHalos) %in% c("tiledW", "tiledH")])
 
 # GFlop/s
 g <- ggplot(filterData, aes(x=nbCells, y=gigaflops_mean, color=name))
