@@ -24,8 +24,8 @@ diff: all
 	OMP_NUM_THREADS=4 ./stencil_OMP_for_halos -dpc > stencil_OMP_for_halos.out
 	mpirun -np 4 ./stencil_MPI_Pure -dpc > stencil_MPI_Pure.out
 	OMP_NUM_THREADS=4 mpirun -np 4 ./stencil_MPI_omp -dpc > stencil_MPI_omp.out
-	# diff stencil_seq.out stencil_OMP_for.out
-	# diff stencil_seq.out stencil_OMP_for_halos.out
+	diff stencil_seq.out stencil_OMP_for.out
+	diff stencil_seq.out stencil_OMP_for_halos.out
 	# diff stencil_seq.out stencil_MPI_Pure.out
 	# diff stencil_seq.out stencil_MPI_omp.out
 
