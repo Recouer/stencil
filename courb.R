@@ -1,7 +1,7 @@
 library(plyr)
 library(dplyr)
 library(ggplot2)
-#slibrary(viridis)
+#library(viridis)
 
 # Clean
 rm(list=ls(all=TRUE))
