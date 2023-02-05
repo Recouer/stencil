@@ -1,7 +1,7 @@
 library(plyr)
 library(dplyr)
 library(ggplot2)
-library(viridis)
+#slibrary(viridis)
 
 # Clean
 rm(list=ls(all=TRUE))
@@ -11,12 +11,33 @@ graphics.off()
 currentScriptDir <- dirname(rstudioapi::getActiveDocumentContext()$path)
 setwd(currentScriptDir)
 
-filename <- "csv/seq.csv"
-dataRaw <- read.csv(filename, header=T, sep = ",")
+# Load data
+filename <- "csvPlafrim/seq.csv"
+dataRawSeq <- read.csv(filename, header=T, sep = ",")
+dataRawSeq["name"] = "seq"
+
+filename <- "csvPlafrim/omp.csv"
+dataRawOmp <- read.csv(filename, header=T, sep = ",")
+dataRawOmp["name"] = "omp"
+
+filename <- "csvPlafrim/omp_halos.csv"
+dataRawOmpHalos <- read.csv(filename, header=T, sep = ",")
+dataRawOmpHalos["name"] = "ompHalos"
+
+#filename <- "csvPlafrim/mpiPure.csv"
+#dataRawMpiPure <- read.csv(filename, header=T, sep = ",")
+#dataRawMpiPure["name"] = "MpiPure"
+
+#filename <- "csvPlafrim/mpiOmp.csv"
+#dataRawMpiOmp <- read.csv(filename, header=T, sep = ",")
+#dataRawMpiOmp["name"] = "MpiOmp"
+
+#data <- rbind(dataRawSeq, dataRawOmp, dataRawMpiPure, dataRawMpiOmp)
+dataRaw <- rbind(dataRawSeq, dataRawOmp)
 
 data <- ddply(
   dataRaw,
-  c("steps", "height", "width", "nbCells", "fpOpByStep"),
+  c("name","steps", "height", "width", "nbCells", "fpOpByStep"),
   summarise,
   timeInµSec_min=min(timeInµSec),
   timeInµSec_mean=mean(timeInµSec),
@@ -30,13 +51,27 @@ data <- ddply(
   interactions=n(),
 )
 
-SIZE <- paste(data$width, data$height, sep="_")
-data <- cbind(data, SIZE)
+dataOmpHalos <- ddply(
+  dataRawOmpHalos,
+  c("name","steps", "height", "width", "tiledW", "tiledH", "nbCells", "fpOpByStep"),
+  summarise,
+  timeInµSec_min=min(timeInµSec),
+  timeInµSec_mean=mean(timeInµSec),
+  timeInµSec_max=max(timeInµSec),
+  gigaflops_min=min(gigaflops),
+  gigaflops_mean=mean(gigaflops),
+  gigaflops_max=max(gigaflops),
+  cellByS_min=min(cellByS),
+  cellByS_mean=mean(cellByS),
+  cellByS_max=max(cellByS),
+  interactions=n(),
+)
 
-dataSeq = data
+###################################### Seq
+filterData=data[data$name=="seq",]
 
 # GFlop/s
-g <- ggplot(data, aes(x=nbCells, y=gigaflops_mean))
+g <- ggplot(filterData, aes(x=nbCells, y=gigaflops_mean))
 g <- g + geom_ribbon(aes(ymin=gigaflops_min, ymax=gigaflops_max),alpha=0.2)
 #g <- g + geom_errorbar(aes(ymin=gigaflops_min, ymax=gigaflops_max))
 g <- g + geom_line()
@@ -45,41 +80,18 @@ g <- g + labs(title="Perfs Seq", x="nbCells", y="GFlop/s")
 plot(g)
 
 # time(µ sec)
-g <- ggplot(data, aes(x=nbCells, y=timeInµSec_mean))
+g <- ggplot(filterData, aes(x=nbCells, y=timeInµSec_mean))
 g <- g + geom_ribbon(aes(ymin=timeInµSec_min, ymax=timeInµSec_max),alpha=0.2)
 g <- g + geom_line()
 g <- g + geom_point()
 g <- g + labs(title="Time evolution Seq", x="nbCells", y="time(µ sec)")
 plot(g)
 
-######################################
-
-filename <- "csv/omp.csv"
-dataRaw <- read.csv(filename, header=T, sep = ",")
-
-data <- ddply(
-  dataRaw,
-  c("steps", "height", "width", "nbCells", "fpOpByStep"),
-  summarise,
-  timeInµSec_min=min(timeInµSec),
-  timeInµSec_mean=mean(timeInµSec),
-  timeInµSec_max=max(timeInµSec),
-  gigaflops_min=min(gigaflops),
-  gigaflops_mean=mean(gigaflops),
-  gigaflops_max=max(gigaflops),
-  cellByS_min=min(cellByS),
-  cellByS_mean=mean(cellByS),
-  cellByS_max=max(cellByS),
-  interactions=n(),
-)
-
-SIZE <- paste(data$width, data$height, sep="_")
-data <- cbind(data, SIZE)
-
-dataOmp = data
+###################################### Omp
+filterData=data[data$name=="omp",]
 
 # GFlop/s
-g <- ggplot(data, aes(x=nbCells, y=gigaflops_mean))
+g <- ggplot(filterData, aes(x=nbCells, y=gigaflops_mean))
 g <- g + geom_ribbon(aes(ymin=gigaflops_min, ymax=gigaflops_max),alpha=0.2)
 #g <- g + geom_errorbar(aes(ymin=gigaflops_min, ymax=gigaflops_max))
 g <- g + geom_line()
@@ -88,41 +100,18 @@ g <- g + labs(title="Perfs mpi pure", x="nbCells", y="GFlop/s")
 plot(g)
 
 # time(µ sec)
-g <- ggplot(data, aes(x=nbCells, y=timeInµSec_mean))
+g <- ggplot(filterData, aes(x=nbCells, y=timeInµSec_mean))
 g <- g + geom_ribbon(aes(ymin=timeInµSec_min, ymax=timeInµSec_max),alpha=0.2)
 g <- g + geom_line()
 g <- g + geom_point()
 g <- g + labs(title="Time evolution mpi pure", x="nbCells", y="time(µ sec)")
 plot(g)
 
-######################################
-
-filename <- "csv/mpiPure.csv"
-dataRaw <- read.csv(filename, header=T, sep = ",")
-
-data <- ddply(
-  dataRaw,
-  c("steps", "height", "width", "nbCells", "fpOpByStep"),
-  summarise,
-  timeInµSec_min=min(timeInµSec),
-  timeInµSec_mean=mean(timeInµSec),
-  timeInµSec_max=max(timeInµSec),
-  gigaflops_min=min(gigaflops),
-  gigaflops_mean=mean(gigaflops),
-  gigaflops_max=max(gigaflops),
-  cellByS_min=min(cellByS),
-  cellByS_mean=mean(cellByS),
-  cellByS_max=max(cellByS),
-  interactions=n(),
-)
-
-SIZE <- paste(data$width, data$height, sep="_")
-data <- cbind(data, SIZE)
-
-dataMpiPure = data
+###################################### MpiPure
+filterData=data[data$name=="MpiPure",]
 
 # GFlop/s
-g <- ggplot(data, aes(x=nbCells, y=gigaflops_mean))
+g <- ggplot(filterData, aes(x=nbCells, y=gigaflops_mean))
 g <- g + geom_ribbon(aes(ymin=gigaflops_min, ymax=gigaflops_max),alpha=0.2)
 #g <- g + geom_errorbar(aes(ymin=gigaflops_min, ymax=gigaflops_max))
 g <- g + geom_line()
@@ -131,41 +120,18 @@ g <- g + labs(title="Perfs mpi pure", x="nbCells", y="GFlop/s")
 plot(g)
 
 # time(µ sec)
-g <- ggplot(data, aes(x=nbCells, y=timeInµSec_mean))
+g <- ggplot(filterData, aes(x=nbCells, y=timeInµSec_mean))
 g <- g + geom_ribbon(aes(ymin=timeInµSec_min, ymax=timeInµSec_max),alpha=0.2)
 g <- g + geom_line()
 g <- g + geom_point()
 g <- g + labs(title="Time evolution mpi pure", x="nbCells", y="time(µ sec)")
 plot(g)
 
-######################################
-
-filename <- "csv/mpiOmp.csv"
-dataRaw <- read.csv(filename, header=T, sep = ",")
-
-data <- ddply(
-  dataRaw,
-  c("steps", "height", "width", "nbCells", "fpOpByStep"),
-  summarise,
-  timeInµSec_min=min(timeInµSec),
-  timeInµSec_mean=mean(timeInµSec),
-  timeInµSec_max=max(timeInµSec),
-  gigaflops_min=min(gigaflops),
-  gigaflops_mean=mean(gigaflops),
-  gigaflops_max=max(gigaflops),
-  cellByS_min=min(cellByS),
-  cellByS_mean=mean(cellByS),
-  cellByS_max=max(cellByS),
-  interactions=n(),
-)
-
-SIZE <- paste(data$width, data$height, sep="_")
-data <- cbind(data, SIZE)
-
-dataMpiOmp <- data
+###################################### MpiOmp
+filterData=data[data$name=="MpiOmp",]
 
 # GFlop/s
-g <- ggplot(data, aes(x=nbCells, y=gigaflops_mean))
+g <- ggplot(filterData, aes(x=nbCells, y=gigaflops_mean))
 g <- g + geom_ribbon(aes(ymin=gigaflops_min, ymax=gigaflops_max),alpha=0.2)
 #g <- g + geom_errorbar(aes(ymin=gigaflops_min, ymax=gigaflops_max))
 g <- g + geom_line()
@@ -174,21 +140,18 @@ g <- g + labs(title="Perfs mpi+omp", x="nbCells", y="GFlop/s")
 plot(g)
 
 # time(µ sec)
-g <- ggplot(data, aes(x=nbCells, y=timeInµSec_mean))
+g <- ggplot(filterData, aes(x=nbCells, y=timeInµSec_mean))
 g <- g + geom_ribbon(aes(ymin=timeInµSec_min, ymax=timeInµSec_max),alpha=0.2)
 g <- g + geom_line()
 g <- g + geom_point()
 g <- g + labs(title="Time evolution mpi+omp", x="nbCells", y="time(µ sec)")
 plot(g)
 
-#================================
+###################################### Compare
+filterData=data[data$name %in% c("seq", "omp"),]
+#filterData=data[data$name %in% c("seq", "omp", "MpiPure", "MpiOmp"),]
 
-dataSeq["name"] = "seq"
-dataOmp["name"] = "omp"
-dataMpiPure["name"] = "MpiPure"
-dataMpiOmp["name"] = "MpiOmp"
-
-dataGlob <- rbind(dataSeq, dataOmp, dataMpiPure, dataMpiOmp)
+dataGlob <- filterData
 
 dataGlob$gigaflops_min = dataGlob$gigaflops_min * 1000
 dataGlob$gigaflops_mean = dataGlob$gigaflops_mean * 1000
