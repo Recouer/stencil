@@ -88,6 +88,23 @@ g <- g + scale_x_continuous(trans='log2')
 g <- g + labs(title="Performance by size (log)", subtitle="sequential version", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="GFlop/s")
 plot(g)
 
+# Cell/s
+g <- ggplot(filterData, aes(x=nbCells, y=cellByS_mean))
+g <- g + geom_ribbon(aes(ymin=cellByS_min, ymax=cellByS_max),alpha=0.2)
+g <- g + geom_line()
+g <- g + geom_point()
+g <- g + labs(title="Cell/s by size", subtitle="sequential version", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="Cell/s")
+plot(g)
+
+# Cell/s log
+g <- ggplot(filterData, aes(x=nbCells, y=cellByS_mean))
+g <- g + geom_ribbon(aes(ymin=cellByS_min, ymax=cellByS_max),alpha=0.2)
+g <- g + geom_line()
+g <- g + geom_point()
+g <- g + scale_x_continuous(trans='log2')
+g <- g + labs(title="Cell/s by size (log)", subtitle="sequential version", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="Cell/s")
+plot(g)
+
 # time(µ sec)
 g <- ggplot(filterData, aes(x=nbCells, y=timeInµSec_mean))
 g <- g + geom_ribbon(aes(ymin=timeInµSec_min, ymax=timeInµSec_max),alpha=0.2)
@@ -104,7 +121,7 @@ g <- ggplot(filterData, aes(x=nbCells, y=gigaflops_mean))
 g <- g + geom_ribbon(aes(ymin=gigaflops_min, ymax=gigaflops_max),alpha=0.2)
 g <- g + geom_line()
 g <- g + geom_point()
-g <- g + labs(title="Performance by size", subtitle="OpenMP-for version", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="GFlop/s")
+g <- g + labs(title="Performance by size", subtitle="OpenMP-for (4 threads) version", caption="20 runs on a miriel node on plafrim with 4 threads with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="GFlop/s")
 plot(g)
 
 # GFlop/s log
@@ -113,7 +130,7 @@ g <- g + geom_ribbon(aes(ymin=gigaflops_min, ymax=gigaflops_max),alpha=0.2)
 g <- g + geom_line()
 g <- g + geom_point()
 g <- g + scale_x_continuous(trans='log2')
-g <- g + labs(title="Performance by size (log)", subtitle="OpenMP-for version", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="GFlop/s")
+g <- g + labs(title="Performance by size (log)", subtitle="OpenMP-for (4 threads) version", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="GFlop/s")
 plot(g)
 
 # time(µ sec)
@@ -121,7 +138,7 @@ g <- ggplot(filterData, aes(x=nbCells, y=timeInµSec_mean))
 g <- g + geom_ribbon(aes(ymin=timeInµSec_min, ymax=timeInµSec_max),alpha=0.2)
 g <- g + geom_line()
 g <- g + geom_point()
-g <- g + labs(title="Execution time by size", subtitle="OpenMP-for version", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="time(µ sec)")
+g <- g + labs(title="Execution time by size", subtitle="OpenMP-for with (4 threads) version", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="time(µ sec)")
 plot(g)
 
 ###################################### Seq vs Omp
@@ -132,7 +149,7 @@ g <- ggplot(filterData, aes(x=nbCells, y=gigaflops_mean, color=name))
 g <- g + geom_ribbon(aes(ymin=gigaflops_min, ymax=gigaflops_max),alpha=0.2)
 g <- g + geom_line()
 g <- g + geom_point()
-g <- g + labs(title="Performance by size", subtitle="sequential and OpenMP-for version", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="GFlop/s")
+g <- g + labs(title="Performance by size", subtitle="sequential and OpenMP-for (4 threads) versions", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="GFlop/s")
 plot(g)
 
 # GFlop/s log
@@ -141,7 +158,7 @@ g <- g + geom_ribbon(aes(ymin=gigaflops_min, ymax=gigaflops_max),alpha=0.2)
 g <- g + geom_line()
 g <- g + geom_point()
 g <- g + scale_x_continuous(trans='log2')
-g <- g + labs(title="Performance by size (log)", subtitle="sequential and OpenMP-for version", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="GFlop/s")
+g <- g + labs(title="Performance by size (log)", subtitle="sequential and OpenMP-for (4 threads) versions", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="GFlop/s")
 plot(g)
 
 # time(µ sec)
@@ -149,7 +166,7 @@ g <- ggplot(filterData, aes(x=nbCells, y=timeInµSec_mean, color=name))
 g <- g + geom_ribbon(aes(ymin=timeInµSec_min, ymax=timeInµSec_max),alpha=0.2)
 g <- g + geom_line()
 g <- g + geom_point()
-g <- g + labs(title="Execution time by size", subtitle="sequential and OpenMP-for version", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="time(µ sec)")
+g <- g + labs(title="Execution time by size", subtitle="sequential and OpenMP-for (4 threads) versions", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="time(µ sec)")
 plot(g)
 
 ###################################### Omp Halos
@@ -160,7 +177,7 @@ g <- ggplot(filterData, aes(x=nbCells, y=gigaflops_mean))
 g <- g + geom_ribbon(aes(ymin=gigaflops_min, ymax=gigaflops_max),alpha=0.2)
 g <- g + geom_line()
 g <- g + geom_point()
-g <- g + labs(title="Performance by size", subtitle="OpenMP-for with halos (10x10) version", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="GFlop/s")
+g <- g + labs(title="Performance by size", subtitle="OpenMP-for (4 threads) with halos (10x10) version", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="GFlop/s")
 plot(g)
 
 # GFlop/s log
@@ -169,7 +186,7 @@ g <- g + geom_ribbon(aes(ymin=gigaflops_min, ymax=gigaflops_max),alpha=0.2)
 g <- g + geom_line()
 g <- g + geom_point()
 g <- g + scale_x_continuous(trans='log2')
-g <- g + labs(title="Performance by size (log)", subtitle="OpenMP-for with halos (10x10) version", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="GFlop/s")
+g <- g + labs(title="Performance by size (log)", subtitle="OpenMP-for (4 threads) with halos (10x10) version", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="GFlop/s")
 plot(g)
 
 # time(µ sec)
@@ -177,7 +194,7 @@ g <- ggplot(filterData, aes(x=nbCells, y=timeInµSec_mean))
 g <- g + geom_ribbon(aes(ymin=timeInµSec_min, ymax=timeInµSec_max),alpha=0.2)
 g <- g + geom_line()
 g <- g + geom_point()
-g <- g + labs(title="Execution time by size", subtitle="OpenMP-for with halos (10x10) version", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="time(µ sec)")
+g <- g + labs(title="Execution time by size", subtitle="OpenMP-for (4 threads) with halos (10x10) version", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="time(µ sec)")
 plot(g)
 
 ###################################### Seq vs Omp vs Omp Halos
@@ -188,7 +205,7 @@ g <- ggplot(filterData, aes(x=nbCells, y=gigaflops_mean, color=name))
 g <- g + geom_ribbon(aes(ymin=gigaflops_min, ymax=gigaflops_max),alpha=0.2)
 g <- g + geom_line()
 g <- g + geom_point()
-g <- g + labs(title="Performance by size", subtitle="sequential and OpenMP-for version", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="GFlop/s")
+g <- g + labs(title="Performance by size", subtitle="sequential and OpenMP-for (4 threads) and OpenMP-for (4 threads) with halos (10x10) versions", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="GFlop/s")
 plot(g)
 
 # GFlop/s log
@@ -197,7 +214,7 @@ g <- g + geom_ribbon(aes(ymin=gigaflops_min, ymax=gigaflops_max),alpha=0.2)
 g <- g + geom_line()
 g <- g + geom_point()
 g <- g + scale_x_continuous(trans='log2')
-g <- g + labs(title="Performance by size (log)", subtitle="sequential and OpenMP-for version", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="GFlop/s")
+g <- g + labs(title="Performance by size (log)", subtitle="sequential and OpenMP-for (4 threads) and OpenMP-for (4 threads) with halos (10x10) versions", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="GFlop/s")
 plot(g)
 
 # time(µ sec)
@@ -205,7 +222,7 @@ g <- ggplot(filterData, aes(x=nbCells, y=timeInµSec_mean, color=name))
 g <- g + geom_ribbon(aes(ymin=timeInµSec_min, ymax=timeInµSec_max),alpha=0.2)
 g <- g + geom_line()
 g <- g + geom_point()
-g <- g + labs(title="Execution time by size", subtitle="sequential and OpenMP-for version", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="time(µ sec)")
+g <- g + labs(title="Execution time by size", subtitle="sequential and OpenMP-for (4 threads) and OpenMP-for (4 threads) with halos (10x10) versions", caption="20 runs on a miriel node on plafrim with 200 stencil max steps\nstencil sizes : 10,10 20,20 30,30 40,40 50,50 60,60 70,70 80,80 90,90 100,100 200,200 400,400 800,800 1000,1000 1500,1500 2000,2000", x="nbCells", y="time(µ sec)")
 plot(g)
 
 ###################################### MpiPure
@@ -214,7 +231,6 @@ filterData=data[data$name=="MpiPure",]
 # GFlop/s
 g <- ggplot(filterData, aes(x=nbCells, y=gigaflops_mean))
 g <- g + geom_ribbon(aes(ymin=gigaflops_min, ymax=gigaflops_max),alpha=0.2)
-#g <- g + geom_errorbar(aes(ymin=gigaflops_min, ymax=gigaflops_max))
 g <- g + geom_line()
 g <- g + geom_point()
 g <- g + labs(title="Perfs mpi pure", x="nbCells", y="GFlop/s")
@@ -234,7 +250,6 @@ filterData=data[data$name=="MpiOmp",]
 # GFlop/s
 g <- ggplot(filterData, aes(x=nbCells, y=gigaflops_mean))
 g <- g + geom_ribbon(aes(ymin=gigaflops_min, ymax=gigaflops_max),alpha=0.2)
-#g <- g + geom_errorbar(aes(ymin=gigaflops_min, ymax=gigaflops_max))
 g <- g + geom_line()
 g <- g + geom_point()
 g <- g + labs(title="Perfs mpi+omp", x="nbCells", y="GFlop/s")
@@ -261,7 +276,6 @@ dataGlob$gigaflops_max = dataGlob$gigaflops_max * 1000
 # GFlop/s
 g <- ggplot(dataGlob, aes(x=nbCells, y=gigaflops_mean, color=name))
 g <- g + geom_ribbon(aes(ymin=gigaflops_min, ymax=gigaflops_max),alpha=0.2)
-#g <- g + geom_errorbar(aes(ymin=gigaflops_min, ymax=gigaflops_max))
 g <- g + geom_line()
 g <- g + geom_point()
 g <- g + labs(title="Perfs global", x="nbCells", y="MFlop/s")
