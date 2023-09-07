@@ -16,7 +16,7 @@ LDLIBS += -lm -lrt
 all: stencil_seq stencil_MPI_Pure stencil_OMP_for stencil_OMP_for_halos stencil_MPI_omp
 
 clean:
-	-rm -f stencil stencil_seq stencil_MPI_Pure stencil_OMP_for stencil_OMP_for_halos stencil_MPI_omp
+	-rm -f stencil stencil_seq stencil_MPI_Pure stencil_OMP_for stencil_OMP_for_halos stencil_MPI_omp *.out
 
 diff: all
 	./stencil_seq -dpc > stencil_seq.out
